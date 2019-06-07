@@ -5,7 +5,9 @@ from datetime import timedelta
 
 from odoo import models, fields, api, _
 from odoo.exceptions import Warning as UserError
+import logging
 
+_logger = logging.getLogger(__name__)
 
 class WizardCurrencyRevaluation(models.TransientModel):
 
@@ -152,7 +154,7 @@ class WizardCurrencyRevaluation(models.TransientModel):
                 if currency_id != cp_currency.id:
                     unrealized_gain_loss = 0.0 - balance
         return {'unrealized_gain_loss': unrealized_gain_loss,
-                'currency_rate': currency.rate,
+                'currency_rate': currency._get_conversion_rate(self, cp_currency, company, ctx_rate['date']),
                 'revaluated_balance': adjusted_balance}
 
     @api.model
